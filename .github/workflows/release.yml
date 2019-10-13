@@ -1,0 +1,44 @@
+name: Create a Release
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+
+  release:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+      - name: Run build
+        run: make cross
+      - name: Upload Darwin artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: instagram-photos-resizer-darwin
+          path: bin/darwin/instagram-photos-resizer
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: instagram-photos-resizer-linux
+          path: bin/linux/instagram-photos-resizer
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: instagram-photos-resizer-windows
+          path: bin/windows/instagram-photos-resizer
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
