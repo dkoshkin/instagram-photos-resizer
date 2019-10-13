@@ -18,7 +18,7 @@ DOCKER_GOMOD_IMG_NAME := dkoshkin/instagram-photos-resizer-gomod
 DOCKER_GOMOD_IMG := $(DOCKER_GOMOD_IMG_NAME):$(DOCKER_IMG_TAG)
 
 DOCKER_IMG_NAME := dkoshkin/instagram-photos-resizer
-DOCKER_IMG := $(DOCKER_IMG_NAME):$(DOCKER_IMG_TAG)
+DOCKER_IMG := $(DOCKER_IMG_NAME):$(VERSION)
 
 .PHONY: build
 build: builder.check
@@ -41,6 +41,11 @@ cross: builder.check
 image: builder.check
 	docker build -f ./build/docker/Dockerfile -t $(DOCKER_IMG) .
 	docker tag $(DOCKER_IMG) $(DOCKER_IMG_NAME):latest
+
+.PHONY: image.push
+image.push:
+	docker push $(DOCKER_IMG)
+	docker push $(DOCKER_IMG_NAME):latest
 
 .PHONY: test
 test: builder.check

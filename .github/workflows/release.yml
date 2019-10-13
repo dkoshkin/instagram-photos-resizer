@@ -15,7 +15,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@master
-      - name: Run build
+      - name: Build image
+        run: make image
+      - name: Docker login
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Push image
+        run: make image.push
+      - name: Build binaries
         run: make cross
       - name: Upload Darwin artifact
         uses: actions/upload-artifact@master
